@@ -1,0 +1,13 @@
+{
+   "presets": [
+      [
+         "@babel/env",
+         {
+            "targets": "> 2%, not dead"
+         }
+      ]
+   ],
+   "plugins": [
+      "@babel/plugin-proposal-optional-chaining"
+   ]
+}

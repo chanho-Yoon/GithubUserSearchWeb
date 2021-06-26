@@ -1,0 +1,37 @@
+{
+   "name": "momsitter",
+   "version": "1.0.0",
+   "description": "맘시터 사전 과제",
+   "main": "index.js",
+   "scripts": {
+      "start": "webpack serve --hot",
+      "build": "webpack --mode production --env=build"
+   },
+   "author": "chanho-yoon",
+   "license": "ISC",
+   "devDependencies": {
+      "@babel/cli": "^7.14.5",
+      "@babel/core": "^7.14.6",
+      "@babel/preset-env": "^7.14.7",
+      "babel-loader": "^8.2.2",
+      "css-loader": "^5.2.6",
+      "dotenv-webpack": "^7.0.3",
+      "file-loader": "^6.2.0",
+      "html-loader": "^2.1.2",
+      "html-webpack-plugin": "^5.3.2",
+      "mini-css-extract-plugin": "^1.6.1",
+      "sass": "^1.35.1",
+      "sass-loader": "^12.1.0",
+      "style-loader": "^2.0.0",
+      "styles-loader": "^3.0.0",
+      "webpack": "^5.40.0",
+      "webpack-cli": "^4.7.2",
+      "webpack-dev-server": "^3.11.2"
+   },
+   "dependencies": {
+      "@octokit/core": "^3.5.1",
+      "autoprefixer": "^10.2.6",
+      "node-sass": "^6.0.1",
+      "postcss-loader": "^6.1.0"
+   }
+}
