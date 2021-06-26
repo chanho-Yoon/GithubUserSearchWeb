@@ -30,6 +30,7 @@ function init() {
    });
    // 처음 실행 시 유저 목록이 비어있음
    ulUserElementReset();
+   // 실행하게 되면 로컬에 있는 즐겨찾기 등록된 계정을 미리 그려놓도록
    createLocalList();
 }
 
@@ -59,14 +60,13 @@ function userFavorites( e, item ) {
    }
 }
 
-// Enter 입력 발생 시
+// Enter, Click 발생 시
 function searchAction( e ) {
    if (e.key === 'Enter') {
       if (e.target.value === '')
          ulUserElementReset();
       else {
          searchUser(e.target.value);
-         userName = e.target.value;
       }
    }
    if (e.type === 'click') {
@@ -74,9 +74,9 @@ function searchAction( e ) {
          ulUserElementReset();
       else {
          searchUser(e.target.value);
-         userName = e.target.value;
       }
    }
+   userName = e.target.value;
 }
 
 // 유저 목록 배열이 비어있을 때 실행할 함수
@@ -113,6 +113,7 @@ function ulLocalElementEmpty() {
 // user/api 검색된 단어로 유저 정보 및 리스트 만드는 함수 -------------------------------------------------------
 async function searchUser( searchWord = null ) {
    switch (switchTab) {
+      // API 검색하는 조건부
       case '#tab1':
          const octokit = new Octokit({ auth: process.env.GIT_API });
          const response = await octokit.request('GET /search/users', {
@@ -190,13 +191,13 @@ async function searchUser( searchWord = null ) {
             ulUserElementReset();
          }
          break;
+      // 로컬 검색하는 조건부
       case '#tab2':
          let localSearch = localStorage.getItem(LOCAL_KEY);
          localSearch = JSON.parse(localSearch);
          console.log(localSearch);
          localSearch = localSearch.filter(( item ) => {
-            console.log(item.name.includes(searchWord));
-            return item.name.includes(searchWord);
+            return item.name.toLowerCase().includes(searchWord.toLowerCase());
          });
          createLocalList(localSearch);
          break;
