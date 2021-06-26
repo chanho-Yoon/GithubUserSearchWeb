@@ -9,6 +9,8 @@ const localUlElement = document.querySelector('.local-list');
 const LOCAL_KEY = 'favoritesUser';
 let usersData = null;
 let localUsersData = null;
+let userName = '';
+let switchTab = '#tab1'; // API와 로컬 검색 부분을 알기 위해 선언한 변수
 
 function init() {
    const tabs = document.querySelectorAll('[data-tab-target]');
@@ -16,9 +18,9 @@ function init() {
 
    tabs.forEach(( tab ) => {
       tab.addEventListener('click', () => {
-         console.log(tab.dataset.tabTarget);
+         switchTab = tab.dataset.tabTarget;
+         console.log(switchTab);
          const target = document.querySelector(tab.dataset.tabTarget);
-         console.log(target);
          tabcon.forEach(( tabc_all ) => {
             tabc_all.classList.remove('active');
          });
@@ -33,7 +35,7 @@ function init() {
 
 // 즐겨찾기 함수 , 로컬 스토리지에 저장 -------------------------------------------------------
 function userFavorites( e, item ) {
-   let addItem = { id: item.id, login: item.login, avatar_url: item.avatar_url };
+   let addItem = { id: item.id, name: userName, login: item.login, avatar_url: item.avatar_url };
    const className = e.target.parentNode.className;
 
    if (className.includes('active')) {
@@ -62,14 +64,18 @@ function searchAction( e ) {
    if (e.key === 'Enter') {
       if (e.target.value === '')
          ulUserElementReset();
-      else
+      else {
          searchUser(e.target.value);
+         userName = e.target.value;
+      }
    }
    if (e.type === 'click') {
       if (e.target.value === '')
          ulUserElementReset();
-      else
+      else {
          searchUser(e.target.value);
+         userName = e.target.value;
+      }
    }
 }
 
@@ -81,6 +87,7 @@ function ulUserElementReset() {
       </li>
    `;
    getSearchValue.value = '';
+   createLocalList();
 }
 
 // 로컬 목록 배열이 비어있을 때 실행할 함수
@@ -90,6 +97,7 @@ function ulLocalElementReset() {
          <h1> 유저 목록이 비었습니다.</h1>
       </li>
    `;
+   getSearchValue.value = '';
 }
 
 // 유저 재검색을 위한 초기화
@@ -104,92 +112,112 @@ function ulLocalElementEmpty() {
 
 // user/api 검색된 단어로 유저 정보 및 리스트 만드는 함수 -------------------------------------------------------
 async function searchUser( searchWord = null ) {
-   const octokit = new Octokit({ auth: process.env.GIT_API });
-   const response = await octokit.request('GET /search/users', {
-      q       : searchWord + 'in:name',
-      page    : 1,
-      per_page: 100
-   });
-   usersData = response.data.items;
-   usersData.sort(( a, b ) => {
-      let nameA = a.login;
-      let nameB = b.login;
-      if (nameA < nameB)
-         return -1;
-      if (nameA > nameB)
-         return 1;
-      return 0;
-   });
+   switch (switchTab) {
+      case '#tab1':
+         const octokit = new Octokit({ auth: process.env.GIT_API });
+         const response = await octokit.request('GET /search/users', {
+            q       : searchWord + 'in:name',
+            page    : 1,
+            per_page: 100
+         });
+         usersData = response.data.items;
+         usersData.sort(( a, b ) => {
+            let nameA = a.login;
+            let nameB = b.login;
+            if (nameA < nameB)
+               return -1;
+            if (nameA > nameB)
+               return 1;
+            return 0;
+         });
 
-   // 재검색을 위해 초기화
-   ulUserElementEmpty();
+         // 재검색을 위해 초기화
+         ulUserElementEmpty();
 
-   let prev = '!@#dumyValue';
-   let startWord = prev;
+         let prev = '!@#dumyValue';
+         let startWord = prev;
 
-   if (usersData.length !== 0) {
-      let getLocalStorageItem = localStorage.getItem(LOCAL_KEY);
-      getLocalStorageItem = JSON.parse(getLocalStorageItem);
+         if (usersData.length !== 0) {
+            let getLocalStorageItem = localStorage.getItem(LOCAL_KEY);
+            getLocalStorageItem = JSON.parse(getLocalStorageItem);
 
-      usersData.forEach(( item ) => {
-            const liEl = document.createElement('li');
-            const pEl = document.createElement('p');
-            const imgEl = document.createElement('img');
-            const spanEl = document.createElement('span');
-            const btnEl = document.createElement('button');
-            const iEl = document.createElement('i');
-            // 이전 첫 글자와 다른 첫 번째 경우에만 실행하는 조건문
-            imgEl.src = item.avatar_url;
-            imgEl.alt = 'profile image';
-            spanEl.innerText = item.login;
+            usersData.forEach(( item ) => {
+                  const liEl = document.createElement('li');
+                  const pEl = document.createElement('p');
+                  const imgEl = document.createElement('img');
+                  const spanEl = document.createElement('span');
+                  const btnEl = document.createElement('button');
+                  const iEl = document.createElement('i');
+                  // 이전 첫 글자와 다른 첫 번째 경우에만 실행하는 조건문
+                  imgEl.src = item.avatar_url;
+                  imgEl.alt = 'profile image';
+                  spanEl.innerText = item.login;
 
-            btnEl.className = 'btn';
-            iEl.className = 'far fa-star';
-            if (prev !== item.login.slice(0, 1)) {
-               prev = item.login.slice(0, 1);
-               startWord = prev;
+                  btnEl.className = 'btn';
+                  iEl.className = 'far fa-star';
+                  if (prev !== item.login.slice(0, 1)) {
+                     prev = item.login.slice(0, 1);
+                     startWord = prev;
 
-               pEl.className = 'item-start-word';
-               pEl.innerText = startWord;
+                     pEl.className = 'item-start-word';
+                     pEl.innerText = startWord;
 
-               imgEl.src = item.avatar_url;
-               imgEl.alt = 'profile image';
-               spanEl.innerText = item.login;
+                     imgEl.src = item.avatar_url;
+                     imgEl.alt = 'profile image';
+                     spanEl.innerText = item.login;
 
-               liEl.appendChild(pEl);
-               liEl.appendChild(imgEl);
-               liEl.appendChild(spanEl);
-               liEl.appendChild(btnEl);
-            } else {
-               liEl.appendChild(imgEl);
-               liEl.appendChild(spanEl);
-               liEl.appendChild(btnEl);
-            }
-            getLocalStorageItem?.forEach(( data ) => {
-               if (data.id === item.id) {
-                  btnEl.className = 'btn active';
+                     liEl.appendChild(pEl);
+                     liEl.appendChild(imgEl);
+                     liEl.appendChild(spanEl);
+                     liEl.appendChild(btnEl);
+                  } else {
+                     liEl.appendChild(imgEl);
+                     liEl.appendChild(spanEl);
+                     liEl.appendChild(btnEl);
+                  }
+                  getLocalStorageItem?.forEach(( data ) => {
+                     if (data.id === item.id) {
+                        btnEl.className = 'btn active';
+                     }
+                  });
+                  // iEl.className = 'far fa-star';
+                  btnEl.appendChild(iEl);
+                  btnEl.addEventListener('click', ( e ) => userFavorites(e, item));
+                  userUlElement.appendChild(liEl);
                }
-            });
-            // iEl.className = 'far fa-star';
-            btnEl.appendChild(iEl);
-            btnEl.addEventListener('click', ( e ) => userFavorites(e, item));
-            userUlElement.appendChild(liEl);
+            );
+         } else {
+            ulUserElementReset();
          }
-      );
-   } else {
-      ulUserElementReset();
+         break;
+      case '#tab2':
+         let localSearch = localStorage.getItem(LOCAL_KEY);
+         localSearch = JSON.parse(localSearch);
+         console.log(localSearch);
+         localSearch = localSearch.filter(( item ) => {
+            console.log(item.name.includes(searchWord));
+            return item.name.includes(searchWord);
+         });
+         createLocalList(localSearch);
+         break;
+      default:
+         break;
    }
 }
 
 // 즐겨찾기 리스트 생성하는 함수 -------------------------------------------------------
-function createLocalList() {
+function createLocalList( localSearch = null ) {
    ulLocalElementReset();
-   localUsersData = localStorage.getItem(LOCAL_KEY);
-   localUsersData = JSON.parse(localUsersData);
+
+   if (localSearch !== null) {
+      localUsersData = localSearch
+   } else {
+      localUsersData = localStorage.getItem(LOCAL_KEY);
+      localUsersData = JSON.parse(localUsersData);
+   }
    let prev = '!@#dumyValue';
    let startWord = prev;
 
-   console.log(localUsersData);
    if (localUsersData !== null && localUsersData.length !== 0) {
       ulLocalElementEmpty();
       localUsersData.forEach(( item ) => {
