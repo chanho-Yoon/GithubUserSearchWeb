@@ -6,12 +6,17 @@
 
 ## 구현한 기능
 - 검색창에 username 값을 입력 하고 Enter, 버튼 클릭 시 해당 유저네임에 해당하는 깃허브 목록들을 가져와 리스트에 보여집니다.
+
 ![image](https://user-images.githubusercontent.com/54402926/123507399-0a41d800-d6a4-11eb-875e-2a0db39bf1a0.png)
 
 - (API, 로컬 리스트) 보여질땐 알파벳 초성에 해당하는 첫 아이템에는 해당하는 초성이 유저 프로필 왼쪽 상단 부분에 보여집니다.
+
+
 ![image](https://user-images.githubusercontent.com/54402926/123507411-1c237b00-d6a4-11eb-9e78-2cf468e1147b.png)
 
 - 리스트 각 항목의 아이템에는 즐겨찾기를 등록할 수 있는 버튼이 존재하고 클릭 시 로컬스토리지에 즐겨찾기에 등록된 item data가 등록됩니다.
+
+
 ![image](https://user-images.githubusercontent.com/54402926/123507443-55f48180-d6a4-11eb-865f-5706c7d92c6b.png)
 
 - 만약 리스트에서 다시 검색 시에 즐겨찾기에 등록된 아이템은 즐겨찾기 버튼이 활성화 되어있습니다.
