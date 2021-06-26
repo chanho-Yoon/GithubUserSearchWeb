@@ -19,7 +19,6 @@ function init() {
    tabs.forEach(( tab ) => {
       tab.addEventListener('click', () => {
          switchTab = tab.dataset.tabTarget;
-         console.log(switchTab);
          const target = document.querySelector(tab.dataset.tabTarget);
          tabcon.forEach(( tabc_all ) => {
             tabc_all.classList.remove('active');
@@ -195,7 +194,6 @@ async function searchUser( searchWord = null ) {
       case '#tab2':
          let localSearch = localStorage.getItem(LOCAL_KEY);
          localSearch = JSON.parse(localSearch);
-         console.log(localSearch);
          localSearch = localSearch.filter(( item ) => {
             return item.name.toLowerCase().includes(searchWord.toLowerCase());
          });
