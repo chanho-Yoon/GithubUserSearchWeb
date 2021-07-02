@@ -87,3 +87,5 @@ usersData.forEach(( item ) => {
        liEl.appendChild(btnEl);
     }
 ```
+
+> [리펙토링 진행중(Redux, typescript)](https://github.com/chanho-Yoon/GithubUserSearchWeb-redux-typescript)
