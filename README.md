@@ -88,4 +88,5 @@ usersData.forEach(( item ) => {
     }
 ```
 
+## 리펙토링 
 > [리펙토링 진행중(Redux, typescript)](https://github.com/chanho-Yoon/GithubUserSearchWeb-redux-typescript)
